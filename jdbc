@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYSTEM — ARC VACANCES 17J</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+:root {
+  --void: #000308;
+  --deep: #010814;
+  --panel: #05111f;
+  --panel2: #071525;
+  --gate: #0066ff;
+  --gate2: #0044cc;
+  --glow: rgba(0,102,255,0.35);
+  --glow2: rgba(0,102,255,0.15);
+  --cyan: #00cfff;
+  --cyan-g: rgba(0,207,255,0.2);
+  --gold: #e8b84b;
+  --gold-g: rgba(232,184,75,0.2);
+  --green: #00ff88;
+  --green-g: rgba(0,255,136,0.15);
+  --red: #ff3355;
+  --purple: #7b3ff5;
+  --purple-g: rgba(123,63,245,0.2);
+  --text: #a8c5e0;
+  --text2: #4a7090;
+  --border: rgba(0,102,255,0.2);
+  --border2: rgba(0,102,255,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Share Tech Mono', monospace;
+  background: var(--void);
+  color: var(--text);
+  min-height: 100vh;
+  cursor: default;
+  overflow-x: hidden;
+}
+
+/* ── PARTICLES BG ── */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── SCANLINES ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px 80px;
+}
+
+/* ══════════════════════════════
+   SYSTEM BOOT SCREEN
+══════════════════════════════ */
+#boot {
+  position: fixed;
+  inset: 0;
+  background: var(--void);
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  transition: opacity 0.8s;
+}
+
+.boot-text {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(10px, 2.5vw, 14px);
+  color: var(--gate);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  animation: boot-blink 0.8s ease-in-out infinite;
+}
+
+@keyframes boot-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.boot-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(28px, 7vw, 56px);
+  font-weight: 900;
+  color: white;
+  text-align: center;
+  line-height: 1.1;
+  text-shadow: 0 0 40px var(--glow), 0 0 80px var(--glow2);
+  letter-spacing: 4px;
+}
+
+.boot-bar-wrap {
+  width: 280px;
+  height: 3px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.boot-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gate), var(--cyan));
+  border-radius: 2px;
+  width: 0%;
+  box-shadow: 0 0 12px var(--glow);
+  transition: width 0.05s linear;
+}
+
+/* ══════════════════════════════
+   TOP HEADER
+══════════════════════════════ */
+.sys-header {
+  padding: 40px 0 28px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s ease 1.2s both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.sys-label {
+  font-size: 9px;
+  color: var(--gate);
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sys-label::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--gate);
+}
+
+.sys-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(22px, 5vw, 40px);
+  font-weight: 900;
+  color: white;
+  letter-spacing: 2px;
+  line-height: 1.1;
+  text-shadow: 0 0 30px var(--glow);
+}
+
+.sys-title span { color: var(--cyan); }
+
+.sys-subtitle {
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--text2);
+  letter-spacing: 4px;
+}
+
+/* ── HUNTER STATUS (top right) ── */
+.hunter-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 16px 20px;
+  text-align: right;
+  min-width: 180px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 30px var(--glow2);
+}
+
+.hunter-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gate), var(--cyan));
+}
+
+.h-rank {
+  font-family: 'Orbitron', monospace;
+  font-size: 22px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 0 20px var(--glow);
+}
+
+.h-rank-label { font-size: 9px; color: var(--text2); letter-spacing: 3px; }
+
+.h-lv {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.h-lv-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 15px var(--cyan-g);
+}
+
+/* ══════════════════════════════
+   XP BAR
+══════════════════════════════ */
+.xp-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  animation: fadeUp 0.6s ease 1.3s both;
+}
+
+.xp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.xp-tag { font-size: 9px; color: var(--text2); letter-spacing: 3px; }
+.xp-nums { font-size: 12px; color: var(--gold); }
+.xp-nums strong { font-family: 'Orbitron', monospace; font-size: 15px; }
+
+.xp-track {
+  height: 6px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+}
+
+.xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gate2), var(--gate), var(--cyan));
+  border-radius: 3px;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+  box-shadow: 0 0 10px var(--glow);
+}
+
+.xp-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 20px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+  border-radius: 3px;
+}
+
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin-top: 14px;
+  background: var(--border2);
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.stat-chip {
+  background: var(--panel2);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.stat-chip-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--cyan);
+  display: block;
+  text-shadow: 0 0 10px var(--cyan-g);
+}
+
+.stat-chip-label { font-size: 8px; color: var(--text2); letter-spacing: 2px; margin-top: 3px; }
+
+/* ══════════════════════════════
+   SECTION TITLES
+══════════════════════════════ */
+.sec-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 32px 0 14px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.sec-title-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+
+.sec-title h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gate);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sec-icon {
+  width: 26px; height: 26px;
+  border: 1px solid var(--gate);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px var(--glow2), inset 0 0 8px var(--glow2);
+}
+
+/* ══════════════════════════════
+   ROUTINE
+══════════════════════════════ */
+.routine-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+@media(max-width:600px) { .routine-list { grid-template-columns: 1fr; } }
+
+.r-item {
+  background: var(--panel2);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--gate2);
+  padding: 11px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.18s;
+  user-select: none;
+  border-radius: 2px;
+}
+
+.r-item:hover { border-left-color: var(--cyan); background: #07192a; }
+.r-item.done { border-left-color: var(--green); background: #021208; opacity:0.7; }
+
+.r-cb {
+  width: 16px; height: 16px;
+  border: 1px solid var(--text2);
+  border-radius: 1px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.r-item.done .r-cb { background: var(--green); border-color: var(--green); color: #001a0a; }
+.r-text { font-size: 11px; color: var(--text); letter-spacing: 0.5px; }
+.r-item.done .r-text { text-decoration: line-through; color: var(--text2); }
+.r-time { font-size: 9px; color: var(--text2); margin-left: auto; white-space: nowrap; }
+
+/* ══════════════════════════════
+   DAY NAVIGATOR
+══════════════════════════════ */
+.day-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.nav-btn {
+  width: 34px; height: 34px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+.nav-btn:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 12px var(--cyan-g); }
+
+.day-center {
+  flex: 1;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 0 20px var(--glow2);
+  position: relative;
+  overflow: hidden;
+}
+
+.day-center::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--glow2) 0%, transparent 60%);
+}
+
+.day-big {
+  font-family: 'Orbitron', monospace;
+  font-size: 22px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 0 20px var(--glow);
+  position: relative;
+}
+
+.day-arc {
+  text-align: right;
+  position: relative;
+}
+
+.day-arc-name {
+  font-size: 9px;
+  color: var(--gate);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.day-arc-theme {
+  font-size: 10px;
+  color: var(--text2);
+  margin-top: 3px;
+  max-width: 200px;
+  text-align: right;
+}
+
+/* Quest progress */
+.qprog {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 9px;
+  color: var(--text2);
+  letter-spacing: 2px;
+}
+
+.qprog-bar {
+  flex: 1;
+  height: 3px;
+  background: var(--border2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.qprog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gate), var(--cyan));
+  border-radius: 2px;
+  transition: width 0.5s;
+  box-shadow: 0 0 6px var(--glow);
+}
+
+/* ══════════════════════════════
+   QUEST CARDS
+══════════════════════════════ */
+.quest-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 10px;
+}
+
+@media(max-width:640px) { .quest-grid { grid-template-columns: 1fr; } }
+
+.q-card {
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: 18px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* colored top stripe */
+.q-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.q-card.phys::before  { background: linear-gradient(90deg, #ff4444, #ff8800); }
+.q-card.ment::before  { background: linear-gradient(90deg, var(--gate), var(--purple)); }
+.q-card.evol::before  { background: linear-gradient(90deg, var(--cyan), var(--green)); }
+
+/* glow on hover */
+.q-card.phys:hover  { border-color: rgba(255,100,0,0.4); box-shadow: 0 0 20px rgba(255,100,0,0.12); }
+.q-card.ment:hover  { border-color: var(--border); box-shadow: 0 0 20px var(--glow2); }
+.q-card.evol:hover  { border-color: rgba(0,207,255,0.3); box-shadow: 0 0 20px var(--cyan-g); }
+
+.q-card:hover { transform: translateY(-2px); }
+.q-card.done { opacity: 0.55; }
+.q-card.done .q-title { text-decoration: line-through; }
+
+.q-type-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.q-type {
+  font-size: 8px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.phys .q-type  { color: #ff7744; }
+.ment .q-type  { color: var(--gate); }
+.evol .q-type  { color: var(--cyan); }
+
+.q-check {
+  width: 20px; height: 20px;
+  border: 1px solid var(--text2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.q-card:hover .q-check { border-color: var(--green); }
+.q-card.done .q-check { background: var(--green); border-color: var(--green); color: #001a0a; }
+
+.q-icon { font-size: 20px; }
+.q-title { font-size: 13px; font-weight: 700; color: white; line-height: 1.3; font-family: 'Orbitron', monospace; font-size: 11px; }
+.q-desc { font-size: 10px; color: var(--text2); line-height: 1.6; flex: 1; }
+
+.q-xp {
+  font-size: 10px;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ══════════════════════════════
+   REWARD PANEL
+══════════════════════════════ */
+.reward-panel {
+  margin-top: 12px;
+  background: linear-gradient(135deg, #08001a, #030d1a);
+  border: 1px solid rgba(123,63,245,0.35);
+  border-radius: 3px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 0 25px var(--purple-g);
+  flex-wrap: wrap;
+}
+
+.reward-label { font-size: 8px; color: var(--purple); letter-spacing: 3px; margin-bottom: 5px; }
+.reward-text  { font-size: 11px; color: var(--text); }
+.reward-xp    { font-family: 'Orbitron', monospace; font-size: 16px; color: var(--gold); white-space: nowrap; text-shadow: 0 0 12px var(--gold-g); }
+
+/* ══════════════════════════════
+   17 DAY MAP
+══════════════════════════════ */
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(17,1fr);
+  gap: 4px;
+}
+
+@media(max-width:600px) {
+  .map-grid { grid-template-columns: repeat(9,1fr); }
+}
+
+.map-day {
+  aspect-ratio: 1;
+  background: var(--panel2);
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 10px;
+  color: var(--text2);
+  position: relative;
+}
+
+.map-day:hover { border-color: var(--gate); color: var(--cyan); box-shadow: 0 0 10px var(--glow2); }
+.map-day.active { border-color: var(--cyan); color: var(--cyan); background: #041a2e; box-shadow: 0 0 14px var(--cyan-g); }
+.map-day.done { border-color: var(--green); color: var(--green); background: #001a0a; }
+.map-day.boss { border-color: var(--gold); }
+
+.map-day-n { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700; }
+.map-day-s { font-size: 7px; margin-top: 1px; }
+
+/* ══════════════════════════════
+   RULES
+══════════════════════════════ */
+.rules-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media(max-width:500px) { .rules-wrap { grid-template-columns: 1fr; } }
+
+.rule-box {
+  background: var(--panel2);
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: 16px;
+}
+
+.rule-box.no  { border-left: 3px solid var(--red); }
+.rule-box.yes { border-left: 3px solid var(--green); }
+
+.rule-head {
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.rule-box.no .rule-head  { color: var(--red); }
+.rule-box.yes .rule-head { color: var(--green); }
+
+.rule-line {
+  font-size: 11px;
+  color: var(--text);
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rule-line:last-child { border-bottom: none; }
+.dot-r { width: 4px; height: 4px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+.dot-g { width: 4px; height: 4px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+#toast {
+  position: fixed;
+  top: 20px; right: 20px;
+  z-index: 8000;
+  padding: 12px 20px;
+  background: var(--panel);
+  border: 1px solid var(--green);
+  border-radius: 3px;
+  font-size: 12px;
+  color: var(--green);
+  box-shadow: 0 0 30px var(--green-g);
+  transform: translateX(130%);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  max-width: 280px;
+  letter-spacing: 1px;
+}
+
+#toast.show { transform: translateX(0); }
+#toast.gold { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 30px var(--gold-g); }
+#toast.purple { border-color: var(--purple); color: var(--purple); box-shadow: 0 0 30px var(--purple-g); }
+
+/* ══════════════════════════════
+   LEVEL UP OVERLAY
+══════════════════════════════ */
+#lvlup {
+  position: fixed;
+  inset: 0;
+  z-index: 7000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,3,8,0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+#lvlup.show { opacity: 1; pointer-events: all; }
+
+.lvlup-ring {
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  border: 2px solid var(--gate);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 60px var(--glow), inset 0 0 40px var(--glow2);
+  animation: ring-pulse 1.5s ease-in-out infinite;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+@keyframes ring-pulse {
+  0%,100% { box-shadow: 0 0 40px var(--glow), inset 0 0 20px var(--glow2); }
+  50% { box-shadow: 0 0 80px var(--glow), inset 0 0 50px var(--glow2), 0 0 120px rgba(0,102,255,0.2); }
+}
+
+.lvlup-ring::before, .lvlup-ring::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(0,102,255,0.3);
+}
+
+.lvlup-ring::before { width: 180px; height: 180px; }
+.lvlup-ring::after  { width: 200px; height: 200px; opacity: 0.5; }
+
+.lvlup-lv {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.lvlup-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 56px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 0 40px var(--glow);
+  line-height: 1;
+}
+
+.lvlup-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(16px, 4vw, 28px);
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 4px;
+  text-shadow: 0 0 30px var(--cyan-g);
+  text-align: center;
+}
+
+.lvlup-sub {
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 3px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.lvlup-close {
+  margin-top: 40px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  padding: 10px 32px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+
+.lvlup-close:hover { border-color: var(--cyan); color: var(--cyan); }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--void); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- BOOT -->
+<div id="boot">
+  <div class="boot-text">▸ INITIALISATION DU SYSTÈME...</div>
+  <div class="boot-logo">SOLO LEVELING<br><span style="color:var(--cyan);font-size:0.5em;letter-spacing:8px">ARC VACANCES</span></div>
+  <div class="boot-bar-wrap"><div class="boot-bar" id="boot-bar"></div></div>
+  <div class="boot-text" id="boot-msg">CHARGEMENT DU DONJON...</div>
+</div>
+
+<!-- LEVEL UP OVERLAY -->
+<div id="lvlup">
+  <div class="lvlup-ring">
+    <div class="lvlup-lv">LEVEL</div>
+    <div class="lvlup-num" id="lvlup-num">1</div>
+  </div>
+  <div class="lvlup-title" id="lvlup-title">LEVEL UP</div>
+  <div class="lvlup-sub" id="lvlup-sub">Tu progresses.</div>
+  <button class="lvlup-close" onclick="closeLvlUp()">[ CONTINUER ]</button>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="sys-header">
+    <div>
+      <div class="sys-label">▸ PROTOCOLE ACTIF</div>
+      <div class="sys-title">ARC <span>VACANCES</span></div>
+      <div class="sys-subtitle">17 JOURS — TRANSFORMATION TOTALE</div>
+    </div>
+    <div class="hunter-card">
+      <div class="h-rank-label">HUNTER RANK</div>
+      <div class="h-rank" id="hrank">E</div>
+      <div style="font-size:9px;color:var(--text2);letter-spacing:2px;margin-top:2px" id="hrank-name">NOVICE</div>
+      <div class="h-lv">
+        <span style="font-size:9px;color:var(--text2);letter-spacing:2px">LV</span>
+        <span class="h-lv-num" id="hlv">1</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- XP PANEL -->
+  <div class="xp-panel">
+    <div class="xp-row">
+      <div class="xp-tag">POINTS D'EXPÉRIENCE</div>
+      <div class="xp-nums"><strong id="xp-cur">0</strong> / <span id="xp-nxt">100</span> XP</div>
+    </div>
+    <div class="xp-track">
+      <div class="xp-fill" id="xp-bar" style="width:0%"></div>
+    </div>
+    <div class="stats-strip">
+      <div class="stat-chip">
+        <span class="stat-chip-val" id="s-xptot">0</span>
+        <div class="stat-chip-label">XP TOTAL</div>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip-val" id="s-days">0</span>
+        <div class="stat-chip-label">JOURS / 17</div>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip-val" id="s-quests">0</span>
+        <div class="stat-chip-label">QUÊTES</div>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip-val" id="s-streak">0</span>
+        <div class="stat-chip-label">STREAK 🔥</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="sec-title">
+    <div class="sec-icon">📜</div>
+    <h2>Protocole du Donjon</h2>
+    <div class="sec-title-line"></div>
+  </div>
+  <div class="rules-wrap">
+    <div class="rule-box no">
+      <div class="rule-head">⛔ INTERDIT</div>
+      <div class="rule-line"><span class="dot-r"></span>Jeux vidéo</div>
+      <div class="rule-line"><span class="dot-r"></span>Reels / TikTok / Shorts</div>
+      <div class="rule-line"><span class="dot-r"></span>Scroll sans but</div>
+      <div class="rule-line"><span class="dot-r"></span>Réveil après 9h00</div>
+    </div>
+    <div class="rule-box yes">
+      <div class="rule-head">✅ AUTORISÉ (après quêtes)</div>
+      <div class="rule-line"><span class="dot-g"></span>Films & animés (épisodes complets)</div>
+      <div class="rule-line"><span class="dot-g"></span>Musique pendant travail</div>
+      <div class="rule-line"><span class="dot-g"></span>YouTube long format (+10 min)</div>
+      <div class="rule-line"><span class="dot-g"></span>Sorties, social, activités réelles</div>
+    </div>
+  </div>
+
+  <!-- ROUTINE -->
+  <div class="sec-title">
+    <div class="sec-icon">⚙️</div>
+    <h2>Routine de Base — Chaque Jour</h2>
+    <div class="sec-title-line"></div>
+  </div>
+  <div class="routine-list" id="routine-list"></div>
+
+  <!-- DAILY QUESTS -->
+  <div class="sec-title" style="margin-top:36px">
+    <div class="sec-icon">⚡</div>
+    <h2>Quêtes du Jour</h2>
+    <div class="sec-title-line"></div>
+  </div>
+
+  <div class="day-nav">
+    <button class="nav-btn" onclick="navDay(-1)">◀</button>
+    <div class="day-center">
+      <div class="day-big" id="day-disp">JOUR 1</div>
+      <div class="day-arc">
+        <div class="day-arc-name" id="arc-name">ARC I</div>
+        <div class="day-arc-theme" id="arc-theme">L'ÉVEIL</div>
+      </div>
+    </div>
+    <button class="nav-btn" onclick="navDay(1)">▶</button>
+  </div>
+
+  <div class="qprog">
+    <span id="qp-label">0/3</span>
+    <div class="qprog-bar"><div class="qprog-fill" id="qp-fill" style="width:0%"></div></div>
+    <span id="qp-xp">0 XP</span>
+  </div>
+
+  <div class="quest-grid" id="quest-grid"></div>
+
+  <div class="reward-panel" id="reward-panel">
+    <div>
+      <div class="reward-label">🏆 RÉCOMPENSE — JOUR COMPLET</div>
+      <div class="reward-text" id="reward-text">Complète les 3 quêtes pour débloquer ta soirée.</div>
+    </div>
+    <div class="reward-xp">+50 XP</div>
+  </div>
+
+  <!-- 17 DAY MAP -->
+  <div class="sec-title">
+    <div class="sec-icon">🗺</div>
+    <h2>Carte des 17 Jours</h2>
+    <div class="sec-title-line"></div>
+  </div>
+  <div class="map-grid" id="map-grid"></div>
+
+</div><!-- /wrap -->
+
+<canvas id="bg-canvas"></canvas>
+
+<script>
+// ══════════════════════════
+// CANVAS PARTICLES
+// ══════════════════════════
+(function(){
+  const c = document.getElementById('bg-canvas');
+  const ctx = c.getContext('2d');
+  let W, H, pts = [];
+
+  function resize(){ W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  for(let i=0;i<60;i++) pts.push({
+    x: Math.random()*window.innerWidth,
+    y: Math.random()*window.innerHeight,
+    vx: (Math.random()-0.5)*0.3,
+    vy: (Math.random()-0.5)*0.3,
+    r: Math.random()*1.5+0.3,
+    a: Math.random()
+  });
+
+  function tick(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      p.a = 0.3 + 0.3*Math.sin(Date.now()*0.001 + p.r*10);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(0,102,255,${p.a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+// ══════════════════════════
+// BOOT ANIMATION
+// ══════════════════════════
+const BOOT_MSGS = [
+  'CHARGEMENT DU DONJON...',
+  'DÉTECTION DU CHASSEUR...',
+  'CALIBRATION DES QUÊTES...',
+  'ACTIVATION DU PROTOCOLE...',
+  'SYSTÈME PRÊT.'
+];
+
+(function boot(){
+  const bar = document.getElementById('boot-bar');
+  const msg = document.getElementById('boot-msg');
+  let pct = 0, mi = 0;
+  const iv = setInterval(()=>{
+    pct += Math.random()*4+1;
+    bar.style.width = Math.min(100,pct)+'%';
+    if(pct > (mi+1)*20 && mi < BOOT_MSGS.length-1) { mi++; msg.textContent = BOOT_MSGS[mi]; }
+    if(pct >= 100){
+      clearInterval(iv);
+      setTimeout(()=>{
+        const b = document.getElementById('boot');
+        b.style.opacity = '0';
+        setTimeout(()=>b.style.display='none', 800);
+      }, 600);
+    }
+  }, 40);
+})();
+
+// ══════════════════════════
+// DATA
+// ══════════════════════════
+const ROUTINES = [
+  { id:'r1', t:'Réveil avant 9h00', time:'09:00' },
+  { id:'r2', t:'Verre d\'eau + 5 min sans écran', time:'Matin' },
+  { id:'r3', t:'Hygiène complète', time:'09:00–09:30' },
+  { id:'r4', t:'Petit-déj sans téléphone', time:'09:30' },
+  { id:'r5', t:'Planifier ses 3 quêtes', time:'10:00' },
+  { id:'r6', t:'10 min étirements ou marche', time:'Matin' },
+  { id:'r7', t:'Chambre rangée avant midi', time:'Avant 12h' },
+  { id:'r8', t:'Mode silencieux téléphone (work)', time:'Continu' },
+];
+
+const ARCS = [
+  { days:[1,4], name:'ARC I', theme:'L\'ÉVEIL — Installe les bases.' },
+  { days:[5,9], name:'ARC II', theme:'L\'ASCENSION — Le rythme s\'installe.' },
+  { days:[10,13], name:'ARC III', theme:'LE DONJON — Tu tiens quand c\'est dur.' },
+  { days:[14,17], name:'ARC IV', theme:'LE MONARQUE — Deviens ta version finale.' },
+];
+
+const LEVEL_TITLES = [
+  'Éveillé','Initié','Disciple','Apprenti','Combattant',
+  'Elite','Expert','Maître','Légende','Monarque'
+];
+
+const RANKS = [
+  { r:'E', name:'NOVICE',    minLv:1,  color:'#888' },
+  { r:'D', name:'APPRENTI',  minLv:3,  color:'#4488ff' },
+  { r:'C', name:'CHASSEUR',  minLv:6,  color:'#22cc88' },
+  { r:'B', name:'ELITE',     minLv:10, color:'#ff8833' },
+  { r:'A', name:'VÉTÉRAN',   minLv:14, color:'#cc44ff' },
+  { r:'S', name:'MONARQUE',  minLv:17, color:'#e8b84b' },
+];
+
+// 17 QUESTS — focused on: code, physique, charisme/attractivité, intelligence, dopamine control
+const DAYS = [
+  // ARC I — L'ÉVEIL (J1-4)
+  { d:1,
+    phys:{ icon:'⚔️', t:'100 Pompes', desc:'En plusieurs séries. Rythme régulier, respiration contrôlée. Note ta série max continue.' },
+    ment:{ icon:'💻', t:'1h30 Code sans distraction', desc:'Téléphone dans une autre pièce. Mode avion. Chronomètre visible. Ouvre ton IDE et produis du code réel.' },
+    evol:{ icon:'🎯', t:'Écrire tes 3 "Pourquoi"', desc:'Pourquoi ce challenge ? Pourquoi maintenant ? Qui tu veux être dans 17 jours ? Écris-les à la main, garde-les visibles.' } },
+  { d:2,
+    phys:{ icon:'🏃', t:'Run 20 min + 50 squats', desc:'Course à allure régulière, puis 50 squats en 2 séries. Active le corps dès le matin.' },
+    ment:{ icon:'📖', t:'Lire 30 pages + résumé', desc:'Livre physique ou PDF. Après lecture : note 5 idées clés de mémoire. Ne regarde pas tes notes.' },
+    evol:{ icon:'🗣️', t:'Appeler 1 ami (pas un message)', desc:'Une vraie conversation vocale. Sois présent, curieux, écoute activement. L\'art de la conversation ça se travaille.' } },
+  { d:3,
+    phys:{ icon:'💪', t:'Gainage 4x60s + 30 fentes', desc:'4 séries de 1 min de planche + 15 fentes par jambe. Contrôle > vitesse.' },
+    ment:{ icon:'💻', t:'Mini-projet code 2h', desc:'Crée quelque chose de petit mais fini : une fonction, une page, un script. Quelque chose qui tourne.' },
+    evol:{ icon:'🪞', t:'Audit de ton image', desc:'Regarde ta tenue, ta coupe, ton hygiène. Note 3 choses concrètes à améliorer. Commence à en corriger 1 aujourd\'hui.' } },
+  { d:4,
+    phys:{ icon:'⚡', t:'HIIT 15 min (40s on / 20s off)', desc:'8 cycles : burpees, jumping jacks, montées de genoux, squat jumps. Sudation garantie.' },
+    ment:{ icon:'🧠', t:'Apprendre 1 concept nouveau 1h', desc:'Un sujet qui t\'attire : psychologie, économie, physique, philosophie. Va en profondeur sur 1 seul concept.' },
+    evol:{ icon:'🔕', t:'Journée sans scroll — dopamine reset', desc:'0 réseaux sociaux toute la journée. Remarque quand l\'envie monte. Respire. Remplace par une action réelle.' } },
+  // ARC II — L'ASCENSION (J5-9)
+  { d:5,
+    phys:{ icon:'⚔️', t:'120 Pompes + 100 squats', desc:'Dépasse le jour 1. Ton corps a commencé à s\'adapter. Plusieurs séries, mais fais-les toutes.' },
+    ment:{ icon:'💻', t:'2h Code — session Pomodoro', desc:'4x25min avec 5min pause. Chrono visible. À chaque pause : eau, étirements. Aucune notif.' },
+    evol:{ icon:'✍️', t:'Journal de progression', desc:'Qu\'est-ce qui a changé en 4 jours ? Qu\'est-ce qui te résiste encore ? Qu\'est-ce que tu ressens dans ton corps ?' } },
+  { d:6,
+    phys:{ icon:'🏃', t:'Run 30 min à rythme soutenu', desc:'Maintiens un rythme de conversation (tu peux parler sans t\'étouffer). Ne t\'arrête pas sauf blessure.' },
+    ment:{ icon:'📖', t:'40 pages + mind map', desc:'Lire 40 pages puis créer une carte mentale visuelle de ce que tu retiens. Connexions, idées, questions.' },
+    evol:{ icon:'👁️', t:'Sortir 1h sans téléphone', desc:'Marche dans ton quartier. Observe les gens, les détails, ton environnement. Ton cerveau se calibre.' } },
+  { d:7,
+    phys:{ icon:'💪', t:'Circuit complet x3', desc:'3 tours : 25 pompes + 25 squats + 20 fentes + 45s planche + 10 dips (chaise). 90s entre les tours.' },
+    ment:{ icon:'💻', t:'Déboguer un problème difficile', desc:'Prends un bug, un algo ou un concept que tu comprends mal. Passe 2h dessus sans chercher la solution directement.' },
+    evol:{ icon:'🎙️', t:'Parler à un inconnu', desc:'Dans un commerce, une file, peu importe. Engage une conversation courte et réelle. Sourire, regard, voix posée.' } },
+  { d:8,
+    phys:{ icon:'🧘', t:'Repos actif — marche 45 min + stretching', desc:'Journée de récupération. Mais reste actif. 45 min de marche + 15 min d\'étirements complets.' },
+    ment:{ icon:'🧠', t:'Revoir et consolider tes notes', desc:'Reprends tout ce que tu as lu et appris depuis le J1. Synthèse en 1 page. Ce que tu retiens vraiment.' },
+    evol:{ icon:'🍽️', t:'Cuisiner un vrai repas sain', desc:'Pas de livraison, pas de fast food. Protéines + légumes + glucides complexes. Cuisine = autodiscipline.' } },
+  { d:9,
+    phys:{ icon:'⚡', t:'HIIT 20 min avancé', desc:'50s effort / 10s repos. 10 exercices. Aucune pause supplémentaire. Tu es plus fort qu\'il y a 5 jours.' },
+    ment:{ icon:'💻', t:'Projet code — feature complète', desc:'Ajoute une vraie fonctionnalité à un projet existant. Quelque chose d\'utilisable, de fini, qui fonctionne.' },
+    evol:{ icon:'📱', t:'Configurer ton téléphone anti-distraction', desc:'Supprime ou cache les apps inutiles, active les limites de temps, mets ton fond d\'écran en noir et blanc.' } },
+  // ARC III — LE DONJON (J10-13)
+  { d:10,
+    phys:{ icon:'⚔️', t:'150 Pompes — record personnel', desc:'Bats ton record absolu. Toute la journée si besoin, mais complète les 150. Pas de négociation.' },
+    ment:{ icon:'📖', t:'50 pages — lecture de fond', desc:'Un livre difficile, dense. Prends ton temps. La compréhension en profondeur vaut mieux que la vitesse.' },
+    evol:{ icon:'✍️', t:'Lettre à ton futur toi dans 6 mois', desc:'Qui tu veux être. Ce que tu veux avoir accompli. Tes compétences, ton corps, ta sociabilité. Sois précis.' } },
+  { d:11,
+    phys:{ icon:'🏃', t:'Run 40 min + sprint final 5 min', desc:'40 min régulières puis les 5 dernières à fond. C\'est là que le mental se forge.' },
+    ment:{ icon:'💻', t:'3h Deep Work — zéro interruption', desc:'Téléphone éteint. 3h sur ton projet principal. Produis ton meilleur travail. Pas de musique avec paroles.' },
+    evol:{ icon:'🎙️', t:'Enregistre-toi pendant 3 min', desc:'Parle de toi, de tes objectifs, en vidéo ou audio. Regarde-le. Comment tu te perçois vs comment tu es.' } },
+  { d:12,
+    phys:{ icon:'💪', t:'200 Squats + Core complet', desc:'200 squats en 4 séries + 3x30 crunchs + 3x20 relevés de jambes. Jambes de feu.' },
+    ment:{ icon:'🧠', t:'Apprendre par l\'enseigner', desc:'Explique un concept que tu connais à voix haute pendant 10 min. Comme si tu l\'enseignais. Record-toi.' },
+    evol:{ icon:'👗', t:'Upgrade ton style — 1 chose concrète', desc:'Achète, ajuste ou essaie quelque chose de nouveau dans ta façon de t\'habiller. Confidence = apparence + attitude.' } },
+  { d:13,
+    phys:{ icon:'⚡', t:'Séance force max + bain froid 30s', desc:'Circuit force à intensité maximale puis terminer par 30s d\'eau froide. Maîtrise du corps = maîtrise du mental.' },
+    ment:{ icon:'💻', t:'Test et présentation de ton projet', desc:'Montre ton code ou ton travail à quelqu\'un (ou à toi-même en mode "présentation"). Explique chaque partie.' },
+    evol:{ icon:'🔇', t:'Digital detox 6h l\'après-midi', desc:'De 14h à 20h : 0 téléphone, 0 écran. Lis, marche, réfléchis, cuisine, dors. Ressens ce que c\'est d\'exister sans device.' } },
+  // ARC IV — LE MONARQUE (J14-17)
+  { d:14,
+    phys:{ icon:'⚔️', t:'200 Pompes + 100 squats + run 20 min', desc:'Séance complète. Ton niveau en 14 jours vs ton niveau en J1. Tu n\'es plus le même.' },
+    ment:{ icon:'📖', t:'60 pages + connexions à ta vie', desc:'Lis 60 pages. Après : note 3 idées que tu peux appliquer à ta vraie vie dès maintenant.' },
+    evol:{ icon:'🌐', t:'Initier une vraie conversation (pro ou social)', desc:'Envoie un message à quelqu\'un que tu admires, une opportunité, un contact intéressant. Écris avec intention.' } },
+  { d:15,
+    phys:{ icon:'🏃', t:'Run 50 min — record de distance', desc:'Ta plus longue course depuis le début. Rythme stable. Écoute ton corps, mais ne t\'arrête pas à cause de ton mental.' },
+    ment:{ icon:'💻', t:'4h Deep Work — meilleur travail de l\'arc', desc:'4h de production pure. Ton projet à son niveau le plus haut. Résultat concret, livrable, dont tu es fier.' },
+    evol:{ icon:'✍️', t:'Bilan J15 — analyse honnête', desc:'Ce qui a changé dans ton corps, ta tête, tes habitudes. Qu\'est-ce qui reste dur ? Qu\'est-ce qui est devenu automatique ?' } },
+  { d:16,
+    phys:{ icon:'💪', t:'Circuit champion — tout en 1 séance', desc:'100 pompes + 100 squats + 50 dips + 3x60s planche + 50 fentes + run 15 min. Le circuit complet.' },
+    ment:{ icon:'🧠', t:'Créer tes règles de vie post-arc', desc:'Quelles habitudes tu gardes après le J17 ? Code combien d\'heures/semaine ? Sport ? Lecture ? Écris-les clairement.' },
+    evol:{ icon:'🎙️', t:'Conversation longue et de qualité', desc:'2h avec quelqu\'un que tu apprécies. Pas de téléphone à portée. Écoute vraiment. Pose des vraies questions.' } },
+  { d:17,
+    phys:{ icon:'🏆', t:'TEST FINAL — Bats tous tes records', desc:'Pompes max non-stop + squats max + run 30 min. Note tout et compare au J1. Mesure ta transformation.' },
+    ment:{ icon:'🏆', t:'Livrable final — ton chef d\'œuvre', desc:'Le meilleur code, résumé ou projet que tu aies produit en 17 jours. Quelque chose que tu montres fièrement.' },
+    evol:{ icon:'🏆', t:'Lettre à toi du J0 + toi dans 1 an', desc:'Qui tu étais. Ce que tu pensais. Qui tu es maintenant. Qui tu seras. Fais la promesse de continuer.' } },
+];
+
+const XP_Q = 30, XP_DAY = 50, XP_R = 5;
+
+// ══════════════════════════
+// STATE
+// ══════════════════════════
+function loadS(){
+  try{ const s=localStorage.getItem('slv_vac'); return s?JSON.parse(s):{xp:0,done:{},rdone:{},ddone:{},streak:0,sqsts:0,sdays:0}; }
+  catch(e){ return {xp:0,done:{},rdone:{},ddone:{},streak:0,sqsts:0,sdays:0}; }
+}
+function saveS(){ localStorage.setItem('slv_vac', JSON.stringify(S)); }
+let S = loadS();
+let curDay = 1;
+
+function getArc(d){ for(let a of ARCS) if(d>=a.days[0]&&d<=a.days[1]) return a; return ARCS[0]; }
+
+function getLv(xp){
+  let lv=1, need=100, tot=0;
+  while(tot+need<=xp){ tot+=need; lv++; need=Math.floor(need*1.35); }
+  return { lv, cur:xp-tot, need };
+}
+
+function getRank(lv){ let r=RANKS[0]; for(let rk of RANKS) if(lv>=rk.minLv) r=rk; return r; }
+
+// ══════════════════════════
+// UPDATE UI
+// ══════════════════════════
+let lastLv = 1;
+function updateUI(){
+  const {lv, cur, need} = getLv(S.xp);
+  S.lv = lv;
+  document.getElementById('xp-cur').textContent = cur;
+  document.getElementById('xp-nxt').textContent = need;
+  document.getElementById('xp-bar').style.width = Math.min(100,(cur/need)*100)+'%';
+  document.getElementById('s-xptot').textContent = S.xp;
+  document.getElementById('s-days').textContent = S.sdays;
+  document.getElementById('s-quests').textContent = S.sqsts;
+  document.getElementById('s-streak').textContent = S.streak;
+  document.getElementById('hlv').textContent = lv;
+  const rk = getRank(lv);
+  document.getElementById('hrank').textContent = rk.r;
+  document.getElementById('hrank').style.color = rk.color;
+  document.getElementById('hrank').style.textShadow = `0 0 20px ${rk.color}66`;
+  document.getElementById('hrank-name').textContent = rk.name;
+  if(lv > lastLv){ lastLv=lv; showLvlUp(lv); }
+}
+
+// ══════════════════════════
+// ROUTINE
+// ══════════════════════════
+function renderRoutine(){
+  const today = new Date().toDateString();
+  const list = document.getElementById('routine-list');
+  list.innerHTML='';
+  ROUTINES.forEach(r=>{
+    const k = r.id+'_'+today;
+    const done = !!S.rdone[k];
+    const el = document.createElement('div');
+    el.className = 'r-item'+(done?' done':'');
+    el.innerHTML = `<div class="r-cb">${done?'✓':''}</div><div class="r-text">${r.t}</div><div class="r-time">${r.time}</div>`;
+    el.onclick = ()=>{
+      if(!done){
+        S.rdone[k]=true; S.xp+=XP_R;
+        showToast(`+${XP_R} XP`, 'gold'); checkLv(); updateUI(); saveS();
+      } else { S.rdone[k]=false; saveS(); }
+      renderRoutine();
+    };
+    list.appendChild(el);
+  });
+}
+
+// ══════════════════════════
+// QUESTS
+// ══════════════════════════
+function renderQuests(d){
+  const q = DAYS[d-1];
+  const arc = getArc(d);
+  document.getElementById('day-disp').textContent = `JOUR ${d}`;
+  document.getElementById('arc-name').textContent = arc.name;
+  document.getElementById('arc-theme').textContent = arc.theme;
+
+  const types = [
+    { key:'phys', data:q.phys, cls:'phys', label:'PHYSIQUE' },
+    { key:'ment', data:q.ment, cls:'ment', label:'MENTAL / CODE' },
+    { key:'evol', data:q.evol, cls:'evol', label:'ÉVOLUTION' },
+  ];
+
+  const grid = document.getElementById('quest-grid');
+  grid.innerHTML='';
+  let comp=0, xpG=0;
+
+  types.forEach(t=>{
+    const k = `${d}_${t.key}`;
+    const done = !!S.done[k];
+    if(done){ comp++; xpG+=XP_Q; }
+
+    const c = document.createElement('div');
+    c.className = `q-card ${t.cls}${done?' done':''}`;
+    c.innerHTML = `
+      <div class="q-type-row">
+        <div class="q-type">${t.label}</div>
+        <div class="q-check">${done?'✓':''}</div>
+      </div>
+      <div class="q-icon">${t.data.icon}</div>
+      <div class="q-title">${t.data.t}</div>
+      <div class="q-desc">${t.data.desc}</div>
+      <div class="q-xp">⚡ +${XP_Q} XP</div>`;
+
+    c.onclick = ()=>{
+      if(!done){
+        S.done[k]=true; S.xp+=XP_Q; S.sqsts++;
+        const allDone = types.every(tt=>!!S.done[`${d}_${tt.key}`]);
+        if(allDone && !S.ddone[d]){
+          S.ddone[d]=true; S.xp+=XP_DAY; S.sdays++; S.streak++;
+          setTimeout(()=>showToast(`🏆 JOUR ${d} TERMINÉ ! +${XP_DAY} XP BONUS !`, 'purple'),400);
+        } else {
+          showToast(`+${XP_Q} XP — Quête validée`, 'gold');
+        }
+        checkLv(); saveS(); updateUI(); renderQuests(d); renderMap();
+      }
+    };
+    grid.appendChild(c);
+  });
+
+  document.getElementById('qp-label').textContent = `${comp}/3`;
+  document.getElementById('qp-fill').style.width = (comp/3*100)+'%';
+  document.getElementById('qp-xp').textContent = `${xpG} XP`;
+  document.getElementById('reward-text').textContent = comp>=3
+    ? '🏆 Journée validée. Film, animé, musique — tu mérites ta soirée.'
+    : `Complète les ${3-comp} quête(s) restante(s) pour débloquer ta soirée.`;
+}
+
+// ══════════════════════════
+// MAP
+// ══════════════════════════
+function renderMap(){
+  const g = document.getElementById('map-grid');
+  g.innerHTML='';
+  for(let d=1;d<=17;d++){
+    const el = document.createElement('div');
+    const done = !!S.ddone[d];
+    const active = d===curDay;
+    const boss = d===17;
+    el.className = `map-day${done?' done':''}${active?' active':''}${boss?' boss':''}`;
+    el.innerHTML = `<span class="map-day-n">${d}</span><span class="map-day-s">${done?'✓':boss?'👑':''}</span>`;
+    el.onclick = ()=>{ curDay=d; renderQuests(d); renderMap(); };
+    g.appendChild(el);
+  }
+}
+
+// ══════════════════════════
+// TOAST
+// ══════════════════════════
+let _tt = null;
+function showToast(msg, type=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  if(_tt) clearTimeout(_tt);
+  _tt = setTimeout(()=>{ t.className = `toast ${type}`; }, 3000);
+}
+
+// ══════════════════════════
+// LEVEL UP OVERLAY
+// ══════════════════════════
+function checkLv(){
+  const {lv} = getLv(S.xp);
+  if(lv > (S.lv||1)){
+    S.lv = lv;
+    showLvlUp(lv);
+  }
+}
+
+function showLvlUp(lv){
+  const rk = getRank(lv);
+  document.getElementById('lvlup-num').textContent = lv;
+  document.getElementById('lvlup-title').textContent = LEVEL_TITLES[Math.min(lv-1, LEVEL_TITLES.length-1)].toUpperCase();
+  document.getElementById('lvlup-sub').textContent = `Rang ${rk.r} — ${rk.name}`;
+  document.getElementById('lvlup').classList.add('show');
+}
+
+function closeLvlUp(){ document.getElementById('lvlup').classList.remove('show'); }
+
+// ══════════════════════════
+// NAV
+// ══════════════════════════
+function navDay(d){ curDay = Math.max(1, Math.min(17, curDay+d)); renderQuests(curDay); renderMap(); }
+
+// ══════════════════════════
+// INIT
+// ══════════════════════════
+lastLv = getLv(S.xp).lv;
+renderRoutine();
+renderQuests(curDay);
+renderMap();
+updateUI();
+</script>
+</body>
+</html>
